@@ -1,17 +1,17 @@
 /*
- * ordenador.c
- *
- * Ferramenta em C que implementa BubbleSort, MergeSort e QuickSort,
- * le arquivos .txt de uma pasta (cada um contendo uma linha "ID <numero>"),
- * ordena os arquivos pelo ID e compara o tempo de execucao de cada algoritmo.
- * Tambem pode gerar IDs aleatorios para benchmark.
- *
- * Compilar:  gcc -O2 -Wall -Wextra -o ordenador ordenador.c
- *
- * Exemplos:
- *   ./ordenador -d ./dados                 (le a pasta, roda os 3 algoritmos)
- *   ./ordenador -d ./dados -a quick -o saida.txt
- *   ./ordenador -r 20000 -a todos          (20000 IDs aleatorios)
+  ordenador.c
+ 
+  Ferramenta em C que implementa BubbleSort, MergeSort e QuickSort,
+  le arquivos .txt de uma pasta (cada um contendo uma linha "ID <numero>"),
+  ordena os arquivos pelo ID e compara o tempo de execucao de cada algoritmo.
+  Tambem pode gerar IDs aleatorios para benchmark.
+ 
+  Compilar:  gcc -O2 -Wall -Wextra -o ordenador ordenador.c
+ 
+  Exemplos:
+    ./ordenador -d ./dados                 (le a pasta, roda os 3 algoritmos)
+    ./ordenador -d ./dados -a quick -o saida.txt
+    ./ordenador -r 20000 -a todos          (20000 IDs aleatorios)
  */
 
 #include <stdio.h>
@@ -29,8 +29,8 @@
 #define MAX_NOME 260
 
 /* ======================================================
- *  TIPOS
- * ====================================================== */
+    TIPOS
+   ====================================================== */
 
 /* Um "registro" = um arquivo .txt e o ID lido de dentro dele */
 typedef struct {
@@ -41,8 +41,8 @@ typedef struct {
 typedef void (*FuncOrdenacao)(Registro v[], int n);
 
 /* ======================================================
- *  UTILITARIOS
- * ====================================================== */
+    UTILITARIOS
+   ====================================================== */
 
 static void troca(Registro *a, Registro *b) {
     Registro t = *a;
@@ -67,8 +67,8 @@ static int termina_com_txt(const char *nome) {
 }
 
 /* ======================================================
- *  BUBBLESORT
- * ====================================================== */
+    BUBBLESORT
+   ====================================================== */
 static void bubbleSort(Registro v[], int n) {
     for (int i = 0; i < n - 1; i++) {
         int trocou = 0;
@@ -83,9 +83,9 @@ static void bubbleSort(Registro v[], int n) {
 }
 
 /* ======================================================
- *  MERGESORT
- *  (buffer auxiliar alocado uma unica vez, nao a cada merge)
- * ====================================================== */
+    MERGESORT
+    (buffer auxiliar alocado uma unica vez, nao a cada merge)
+   ====================================================== */
 static void merge(Registro v[], Registro aux[], int l, int m, int r) {
     int i = l, j = m + 1, k = l;
 
@@ -119,10 +119,10 @@ static void mergeSort(Registro v[], int n) {
 }
 
 /* ======================================================
- *  QUICKSORT
- *  Pivo = mediana de 3 (evita O(n^2) em vetores ja ordenados)
- *  Recursao so na parte menor (pilha limitada a O(log n))
- * ====================================================== */
+    QUICKSORT
+    Pivo = mediana de 3 (evita O(n^2) em vetores ja ordenados)
+    Recursao so na parte menor (pilha limitada a O(log n))
+   ====================================================== */
 static int particiona(Registro v[], int low, int high) {
     int mid = low + (high - low) / 2;
 
@@ -162,9 +162,9 @@ static void quickSort(Registro v[], int n) {
 }
 
 /* ======================================================
- *  CRONOMETRO
- *  Copia o vetor original, ordena a copia e mede o tempo.
- * ====================================================== */
+    CRONOMETRO
+    Copia o vetor original, ordena a copia e mede o tempo.
+   ====================================================== */
 static double mede_tempo(FuncOrdenacao f, const Registro original[],
                          Registro trabalho[], int n) {
     memcpy(trabalho, original, (size_t)n * sizeof(Registro));
@@ -177,11 +177,11 @@ static double mede_tempo(FuncOrdenacao f, const Registro original[],
 }
 
 /* ======================================================
- *  LEITURA DE ARQUIVOS
- * ====================================================== */
+    LEITURA DE ARQUIVOS
+   ====================================================== */
 
 /* Procura uma linha contendo "ID" e le o numero que vem depois.
- * Aceita "ID 42", "ID: 42", "ID=42"... Retorna 1 se achou. */
+   Aceita "ID 42", "ID: 42", "ID=42"... Retorna 1 se achou. */
 static int le_id_arquivo(const char *caminho, int *id) {
     FILE *f = fopen(caminho, "r");
     if (!f) {
@@ -225,7 +225,7 @@ static void adiciona_registro(Registro **v, int *n, int *cap,
     (*n)++;
 }
 
-/* Le todos os .txt da pasta. Retorna o numero de registros (ou -1 em erro). */
+// Le todos os .txt da pasta. Retorna o numero de registros (ou -1 em erro). 
 static int carrega_pasta(const char *pasta, Registro **saida) {
     Registro *v = NULL;
     int n = 0, cap = 0;
@@ -273,8 +273,8 @@ static int carrega_pasta(const char *pasta, Registro **saida) {
 }
 
 /* ======================================================
- *  IDs ALEATORIOS
- * ====================================================== */
+    IDs ALEATORIOS
+   ====================================================== */
 static Registro *valores_aleatorios(int n) {
     Registro *v = malloc((size_t)n * sizeof(Registro));
     if (!v) {
@@ -290,8 +290,8 @@ static Registro *valores_aleatorios(int n) {
 }
 
 /* ======================================================
- *  SAIDA
- * ====================================================== */
+    SAIDA
+   ====================================================== */
 static int salva_ordenado(const char *caminho, const Registro v[], int n) {
     FILE *f = fopen(caminho, "w");
     if (!f) {
@@ -305,8 +305,8 @@ static int salva_ordenado(const char *caminho, const Registro v[], int n) {
 }
 
 /* ======================================================
- *  CLI
- * ====================================================== */
+    CLI
+   ====================================================== */
 static void uso(const char *prog) {
     printf("Uso: %s (-d <pasta> | -r <quantidade>) [-a <algoritmo>] [-o <saida.txt>]\n\n", prog);
     printf("  -d <pasta>      le os .txt da pasta (cada um com uma linha \"ID <numero>\")\n");
@@ -362,7 +362,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    /* carrega os dados */
+    // carrega os dados
     Registro *dados = NULL;
     int n;
 
@@ -389,7 +389,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    /* roda e cronometra */
+    // roda e cronometra
     printf("%-12s %12s  %s\n", "Algoritmo", "Tempo (s)", "Ordenado?");
     printf("--------------------------------------\n");
 
@@ -401,7 +401,7 @@ int main(int argc, char *argv[]) {
                esta_ordenado(trabalho, n) ? "sim" : "NAO (bug!)");
     }
 
-    /* salva o resultado da ultima execucao (todas produzem o mesmo resultado) */
+    // salva o resultado da ultima execucao (todas produzem o mesmo resultado)
     if (saida) {
         if (salva_ordenado(saida, trabalho, n))
             printf("\nResultado salvo em '%s'\n", saida);
